@@ -4,9 +4,12 @@
 #include <string.h>
 #include <dirent.h>
 
-int main() {
+int aff_dossier(char dossier[]) {
+    printf("Entre le repetoir a affficher : ");
+    scanf("%s",dossier);
+    strcat(dossier,"\\");
     struct dirent *dir;
-    DIR *d = opendir("C:\\Users\\tomiv\\OneDrive\\PC-Perso\\Documents");
+    DIR *d = opendir(dossier);
     if (d)
     {
         while ((dir = readdir(d)) != NULL)
@@ -14,24 +17,45 @@ int main() {
             printf("%s\n", dir->d_name);
         }
         closedir(d);
+        return dossier;
     }
-    char fichier[30];
+    else {
+        printf("Erreur : Impossible d'ouvrir le dossier %s\n", dossier);
+        return 1;
+    }
+}
+
+int lect_fichier(char dossier[]) {
+    char fichier[30], emplacement[130];
     printf("Choisir un fichier a lire : ");
-    //getchar();
     scanf("%s", fichier);
-    printf(" Fichier Choisi : %s \n", fichier);
+    snprintf(emplacement, sizeof(emplacement), "%s%s", dossier, fichier);
+    printf("Fichier Choisi : %s \n", emplacement);
     FILE *f;
     char contenu;
-
-    f=fopen(fichier,"r");
+    f=fopen(emplacement,"r+");
     if (f == NULL) {
-      printf("Erreur: impossible d'ouvrir le fichier %s\n", fichier);
-      return 1;
+        printf("Erreur: impossible d'ouvrir le fichier %s\n", fichier);
+        return 1;
     }
     while((contenu=fgetc(f))!=EOF){
-        //printf("%c",contenue);
+        //printf("%c",contenu);
         putchar(contenu);
     }
     fclose(f);
+}
+
+int fork() {
+
+}
+
+int main() {
+    char dossier[100];
+    aff_dossier(dossier);
+    if (strlen(dossier) > 0) {
+        lect_fichier(dossier);
+    } else {
+        printf("Erreur : dossier invalide.\n");
+    }
     return 0;
 }
